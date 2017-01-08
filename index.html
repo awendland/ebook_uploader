@@ -151,7 +151,7 @@ upload.addEventListener('click', function (e) {
     formData.append('ebooks', f)
   })
   const req = new XMLHttpRequest()
-  req.open('POST', '/', true)
+  req.open('POST', '', true)
   req.onload = function (onloadE) {
     isUploading = false
     if (Math.floor(req.status / 100) === 2) {
