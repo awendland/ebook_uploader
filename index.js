@@ -16,7 +16,7 @@ const uploading = multer({
 })
 
 app.post('/', uploading.array('ebooks'), (req, res) => {
-  console.log(`Uploaded ${req.files.length} files: ${(req.files || []).map(f => f.originalname)}`);
+  console.log(`${new Date()} Uploaded ${req.files.length} files: ${(req.files || []).map(f => f.originalname).join(', ')}`);
   res.status(204).end();
 });
 
