@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>eBook Uploader</title>
+  <!-- Normalize.css -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+  <!-- Custom Styling -->
+  <style>
+
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+body, html {
+  font-family: "Montserrat", sans-serif;
+  background: white;
+  color: #323a44;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+button {
+  color: white;
+  padding: 12px 16px;
+  border-radius: 5px;
+  background: #09f;
+  border: none;
+}
+button:hover {
+  background: #1aa3ff;
+}
+button:active {
+  background: #33adff;
+}
+
+.drop {
+  flex: 1;
+  border: 3px dashed #DADFE3;
+  border-radius: 15px;
+  text-align: center;
+  background: white;
+  transition: all 0.5s ease-out;
+  margin: 2em;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  position: relative;
+}
+.drop:hover {
+  background: rgba(0, 153, 255, .02);
+}
+.drop .cont {
+  width: 500px;
+  height: 170px;
+  color: #8E99A5;
+  transition: all 0.5s ease-out;
+  margin: auto;
+}
+.drop.dragging {
+  border: 3px dashed #09f;
+  background: rgba(0, 153, 255, .05);
+}
+.drop.dragging .cont {
+  color: #09f;
+}
+.drop .cont i {
+  font-size: 400%;
+  color: #8E99A5;
+  position: relative;
+}
+.drop .cont .title {
+  font-size: 400%;
+  text-transform: uppercase;
+}
+.drop .cont .desc {
+  color: #A4AEBB;
+}
+.drop .cont .browse {
+  margin: 10px 25%;
+}
+.drop input {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: red;
+  opacity: 0;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+#list {
+  font-style: italic;
+  margin-top: 2em;
+}
+.upload {
+  margin: 2em;
+  margin-top: 0;
+}
+
+  </style>
+</head>
+
+<body id="home">
+
+  <form class="drop">
+    <div class="cont">
+      <div class="title">
+        Drag & Drop
+      </div>
+      <div class="desc">
+        an eBook, or 
+      </div>
+      <button class="browse">
+        click here to browse
+      </button>
+      <div id="list"></div>
+    </div>
+    <input id="files" multiple="true" name="ebooks" type="file" />
+  </form>
+  <button class="upload">Upload</button>
+
+  <script>
+var input = document.querySelector('#files')
+var drop = document.querySelector('.drop')
+input.addEventListener('dragenter', function (e) {
+  drop.classList.add('dragging')
+})
+function dragLeave (e) {
+  drop.classList.remove('dragging')
+}
+input.addEventListener('dragleave', dragLeave)
+input.addEventListener('dragend', dragLeave)
+input.addEventListener('mouseout', dragLeave)
+input.addEventListener('input', dragLeave)
+
+const fileList = document.querySelector('#list')
+const upload = document.querySelector('.upload')
+input.addEventListener('change', function (e) {
+  fileList.innerHTML = '';
+  Array.prototype.slice.call(e.target.files).sort(function (f1, f2) {
+    return (f1.name || '').localeCompare(f2.name)
+  }).forEach(function (file) {
+    var span = document.createElement('span')
+    span.innerHTML = file.name
+    fileList.appendChild(span)
+  })
+  upload.disabled = fileList.length === 0
+});
+let isUploading = false
+upload.addEventListener('click', function (e) {
+  if (isUploading || input.files.length < 1) return
+  isUploading = true
+  const formData = new FormData()
+  Array.prototype.forEach.call(input.files, function (f, i) {
+    formData.append('ebooks', f)
+  })
+  const req = new XMLHttpRequest()
+  req.open('POST', '/', true)
+  req.onload = function (onloadE) {
+    isUploading = false
+    if (Math.floor(req.status / 100) === 2) {
+      fileList.innerHTML = '';
+      input.value = ''
+    } else {
+      alert('Error ' + req.status + ' occurred when trying to upload files')
+    }
+  }
+  req.send(formData)
+  e.preventDefault()
+});
+  </script>
+</body>
+</html>
