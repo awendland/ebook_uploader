@@ -20,6 +20,6 @@ app.post('/', uploading.array('ebooks'), (req, res) => {
   res.status(204).end();
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`ePub uploader listening on port ${port}`)
 });
