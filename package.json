@@ -1,0 +1,16 @@
+{
+  "name": "ebook_upload",
+  "version": "1.0.0",
+  "description": "Tool to assist in handling eBook uploads",
+  "main": "index.js",
+  "scripts": {
+    "dev": "UPLOAD_DIR=$(pwd)/uploads node index.js",
+    "start": "node index.js"
+  },
+  "author": "Alex Wendland",
+  "license": "CC-BY-4.0",
+  "dependencies": {
+    "express": "4.14.0",
+    "multer": "1.2.1"
+  }
+}
